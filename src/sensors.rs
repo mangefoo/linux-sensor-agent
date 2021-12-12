@@ -7,8 +7,6 @@ pub fn get_sensor_data() -> HashMap<String, String> {
     sensor_map.insert("amdgpu-.*/edge/temp[0-9]{1}_input", "gpu_edge_temp");
     sensor_map.insert("amdgpu-.*/junction/temp[0-9]{1}_input", "gpu_junction_temp");
     sensor_map.insert("amdgpu-.*/mem/temp[0-9]{1}_input", "gpu_mem_temp");
-    sensor_map.insert("amdgpu-.*/vddgfx/in[0-9]{1}_input", "gpu_voltage");
-    sensor_map.insert("amdgpu-.*/power[0-9]{1}/power[0-9]{1}_average", "gpu_power");
     sensor_map.insert("k10temp-.*/Tctl/temp[0-9]{1}_input", "cpu_temp");
     sensor_map.insert("corsaircpro-.*/fan1 4pin/fan[0-9]{1}_input", "fan1_rpm");
     sensor_map.insert("corsaircpro-.*/fan2 4pin/fan[0-9]{1}_input", "fan2_rpm");
@@ -22,7 +20,6 @@ pub fn get_sensor_data() -> HashMap<String, String> {
     sensor_map.insert("corsaircpro-.*/temp4/temp[0-9]{1}_input", "ambient_temp");
 
     let sensor_values = get_sensor_values(&sensor_map);
-//    println!("Sensor values: {:?}", sensor_values);
 
     return sensor_values;
 }
