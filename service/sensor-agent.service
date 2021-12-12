@@ -1,0 +1,26 @@
+[Unit]
+Description=Sensor Agent service
+ConditionPathExists=/usr/local/sbin/linux-sensor-agent
+Requires=network-online.target
+ 
+[Service]
+Type=simple
+User=root
+Group=root
+LimitNOFILE=1024
+
+Restart=on-failure
+RestartSec=10
+startLimitIntervalSec=60
+
+WorkingDirectory=/
+ExecStart=/usr/local/sbin/linux-sensor-agent
+
+PermissionsStartOnly=true
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=linux-sensor-agent
+
+[Install]
+WantedBy=multi-user.target
+
