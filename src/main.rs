@@ -1,13 +1,15 @@
-use serde_json::json;
-use reqwest::blocking;
+use std::collections::HashMap;
 use std::thread;
 use std::time::{Duration, Instant};
-use crate::sensors::get_sensor_data;
+
+use reqwest::blocking;
+use serde_json::json;
+
 use crate::cpu::get_cpu_data;
 use crate::gpu::get_gpu_data;
 use crate::memory::get_memory_data;
 use crate::network::get_network_data;
-use std::collections::HashMap;
+use crate::sensors::get_sensor_data;
 
 mod sensors;
 mod cpu;
@@ -34,7 +36,7 @@ fn main() {
         let memory_data = get_memory_data();
         sensor_data.extend(memory_data);
 
-        let network_data = get_network_data(&last_network_data);
+        let network_data = get_network_data();
         if last_network_data.keys().len() > 0 {
             let last_received = last_network_data.get("network_received_bytes_1").unwrap().parse::<i64>().unwrap();
             let last_sent = last_network_data.get("network_sent_bytes_1").unwrap().parse::<i64>().unwrap();
@@ -57,11 +59,14 @@ fn main() {
             "topic": "sensors"
         });
 
-        blocking::Client::new()
+        let post_response = blocking::Client::new()
             .post(request_url)
             .json(&register_body)
-            .send()
-            .unwrap();
+            .send();
+
+        if post_response.is_err() {
+            println!("Failed to send update to server: {}", post_response.unwrap_err())
+        }
 
         thread::sleep(Duration::from_secs(1));
     }
