@@ -62,6 +62,7 @@ fn main() {
         let post_response = blocking::Client::new()
             .post(request_url)
             .json(&register_body)
+            .timeout(Duration::from_secs(2))
             .send();
 
         if post_response.is_err() {
