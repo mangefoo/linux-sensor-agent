@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use sensors::{Sensors, Chip, Feature};
 use regex::Regex;
 
-pub fn get_sensor_data() -> HashMap<String, String> {
+pub fn get_sensor_data(debug: bool) -> HashMap<String, String> {
     let mut sensor_map = HashMap::new();
     sensor_map.insert("amdgpu-.*/edge/temp[0-9]{1}_input", "gpu_edge_temp");
     sensor_map.insert("amdgpu-.*/junction/temp[0-9]{1}_input", "gpu_junction_temp");
@@ -19,13 +19,24 @@ pub fn get_sensor_data() -> HashMap<String, String> {
     sensor_map.insert("corsaircpro-.*/temp3/temp[0-9]{1}_input", "front_intake_temp");
     sensor_map.insert("corsaircpro-.*/temp4/temp[0-9]{1}_input", "ambient_temp");
 
-    let sensor_values = get_sensor_values(&sensor_map);
+    let sensor_values = get_sensor_values(&sensor_map, debug);
 
     return sensor_values;
 }
 
-fn get_sensor_values(sensor_map: &HashMap<&str, &str>) -> HashMap<String, String> {
+fn get_sensor_values(sensor_map: &HashMap<&str, &str>, debug: bool) -> HashMap<String, String> {
     let sensors = Sensors::new();
+
+    if debug {
+        println!("Dump:");
+        for chip in sensors {
+            println!("  {}, {:?}", chip.get_name().unwrap(), chip);
+            for feature in chip {
+                println!("    {}, {:?}", feature.get_label().unwrap(), feature);
+            }
+        }
+    }
+
     let mut sensor_values = HashMap::new();
 
     for map in sensor_map {

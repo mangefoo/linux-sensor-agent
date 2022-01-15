@@ -1,6 +1,8 @@
 use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
+use signal_hook::{consts::SIGUSR1, iterator::Signals};
 
 use reqwest::blocking;
 use serde_json::json;
@@ -18,12 +20,18 @@ mod memory;
 mod utils;
 mod network;
 
+struct State {
+    debug: bool
+}
 fn main() {
     let mut last_network_data = HashMap::<String, String>::new();
     let mut last_sample = Instant::now();
+    let debug = Arc::new(Mutex::new(State { debug: false }));
+
+    signals_init(&debug);
 
     loop {
-        let mut sensor_data = get_sensor_data();
+        let mut sensor_data = get_sensor_data(debug.lock().unwrap().debug);
 
         let request_url = format!("http://sensor-relay.int.mindphaser.se/publish");
 
@@ -71,4 +79,17 @@ fn main() {
 
         thread::sleep(Duration::from_secs(1));
     }
+}
+
+fn signals_init(debug: &Arc<Mutex<State>>) {
+    let mut signals = Signals::new(&[SIGUSR1]).unwrap();
+
+    let cloned_debug = debug.clone();
+    thread::spawn(move || {
+        for _sig in signals.forever() {
+            let mut state = cloned_debug.lock().unwrap();
+            state.debug = !state.debug;
+            println!("Toggling USR1 debug");
+        }
+    });
 }
