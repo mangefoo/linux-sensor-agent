@@ -84,10 +84,10 @@ fn main() {
 fn signals_init(state: &Arc<Mutex<State>>) {
     let mut signals = Signals::new(&[SIGUSR1]).unwrap();
 
-    let cloned_state = state.clone();
+    let c_state = state.clone();
     thread::spawn(move || {
         for _sig in signals.forever() {
-            let mut state = cloned_state.lock().unwrap();
+            let mut state = c_state.lock().unwrap();
             state.debug = !state.debug;
             println!("Toggling USR1 debug");
         }
