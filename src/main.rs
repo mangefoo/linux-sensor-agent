@@ -26,12 +26,12 @@ struct State {
 fn main() {
     let mut last_network_data = HashMap::<String, String>::new();
     let mut last_sample = Instant::now();
-    let debug = Arc::new(Mutex::new(State { debug: false }));
+    let state = Arc::new(Mutex::new(State { debug: false }));
 
-    signals_init(&debug);
+    signals_init(&state);
 
     loop {
-        let mut sensor_data = get_sensor_data(debug.lock().unwrap().debug);
+        let mut sensor_data = get_sensor_data(state.lock().unwrap().debug);
 
         let request_url = format!("http://sensor-relay.int.mindphaser.se/publish");
 
@@ -81,13 +81,13 @@ fn main() {
     }
 }
 
-fn signals_init(debug: &Arc<Mutex<State>>) {
+fn signals_init(state: &Arc<Mutex<State>>) {
     let mut signals = Signals::new(&[SIGUSR1]).unwrap();
 
-    let cloned_debug = debug.clone();
+    let cloned_state = state.clone();
     thread::spawn(move || {
         for _sig in signals.forever() {
-            let mut state = cloned_debug.lock().unwrap();
+            let mut state = cloned_state.lock().unwrap();
             state.debug = !state.debug;
             println!("Toggling USR1 debug");
         }
