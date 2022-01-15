@@ -4,9 +4,9 @@ use regex::Regex;
 
 pub fn get_sensor_data(debug: bool) -> HashMap<String, String> {
     let mut sensor_map = HashMap::new();
-    sensor_map.insert("amdgpu-.*/edge/temp[0-9]{1}_input", "gpu_edge_temp");
-    sensor_map.insert("amdgpu-.*/junction/temp[0-9]{1}_input", "gpu_junction_temp");
-    sensor_map.insert("amdgpu-.*/mem/temp[0-9]{1}_input", "gpu_mem_temp");
+    sensor_map.insert("amdgpu-pci-0d00.*/edge/temp[0-9]{1}_input", "gpu_edge_temp");
+    sensor_map.insert("amdgpu-pci-0d00.*/junction/temp[0-9]{1}_input", "gpu_junction_temp");
+    sensor_map.insert("amdgpu-pci-0d00.*/mem/temp[0-9]{1}_input", "gpu_mem_temp");
     sensor_map.insert("k10temp-.*/Tctl/temp[0-9]{1}_input", "cpu_temp");
     sensor_map.insert("corsaircpro-.*/fan1 4pin/fan[0-9]{1}_input", "fan1_rpm");
     sensor_map.insert("corsaircpro-.*/fan2 4pin/fan[0-9]{1}_input", "fan2_rpm");
