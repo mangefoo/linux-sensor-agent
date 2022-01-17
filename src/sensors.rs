@@ -68,7 +68,7 @@ fn get_feature_value(feature: Feature, path: &str) -> String {
     let re = Regex::new(path).unwrap();
     for subfeature in feature {
         if re.is_match(&subfeature.name()) {
-            return format!("{:.2}", subfeature.get_value().unwrap());
+            return format!("{:.2}", subfeature.get_value().or_else("").unwrap());
         }
     }
 
