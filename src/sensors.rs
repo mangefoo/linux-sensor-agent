@@ -1,12 +1,12 @@
 use std::collections::HashMap;
-use sensors::{Sensors, Chip, Feature};
+use sensors::{Sensors, Chip, Feature, LibsensorsError};
 use regex::Regex;
 
 pub fn get_sensor_data(debug: bool) -> HashMap<String, String> {
     let mut sensor_map = HashMap::new();
-    sensor_map.insert("amdgpu-pci-0d00.*/edge/temp[0-9]{1}_input", "gpu_edge_temp");
-    sensor_map.insert("amdgpu-pci-0d00.*/junction/temp[0-9]{1}_input", "gpu_junction_temp");
-    sensor_map.insert("amdgpu-pci-0d00.*/mem/temp[0-9]{1}_input", "gpu_mem_temp");
+    sensor_map.insert("amdgpu-pci-1000.*/edge/temp[0-9]{1}_input", "gpu_edge_temp");
+    sensor_map.insert("amdgpu-pci-1000.*/junction/temp[0-9]{1}_input", "gpu_junction_temp");
+    sensor_map.insert("amdgpu-pci-1000.*/mem/temp[0-9]{1}_input", "gpu_mem_temp");
     sensor_map.insert("k10temp-.*/Tctl/temp[0-9]{1}_input", "cpu_temp");
     sensor_map.insert("corsaircpro-.*/fan1 4pin/fan[0-9]{1}_input", "fan1_rpm");
     sensor_map.insert("corsaircpro-.*/fan2 4pin/fan[0-9]{1}_input", "fan2_rpm");
@@ -66,9 +66,15 @@ fn get_chip_value(chip: Chip, path: &str) -> String {
 
 fn get_feature_value(feature: Feature, path: &str) -> String {
     let re = Regex::new(path).unwrap();
+
     for subfeature in feature {
         if re.is_match(&subfeature.name()) {
-            return format!("{:.2}", subfeature.get_value().or_else("").unwrap());
+            return format!("{:.2}", subfeature.get_value()
+                .or_else(|err: LibsensorsError| {
+                    println!("Failed to get value {}: {:?}", subfeature.name(), err);
+                    return Ok::<f64, LibsensorsError>(0.0);
+                })
+                .unwrap());
         }
     }
 
