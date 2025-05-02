@@ -1,0 +1,2 @@
+reporter = "linux-sensor-agent"
+publish_url = "http://sensor-relay.int.mindphaser.se/publish"

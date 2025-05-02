@@ -14,3 +14,5 @@ serde_json = "1.0"
 reqwest = { version = "0.11", features = ["json", "blocking", "cookies"] }
 lazy_static = "1.4.0"
 signal-hook = "0.3.13"
+toml = "0.8.22"
+clap = "4.5.37"

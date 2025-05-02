@@ -1,3 +1,4 @@
+use clap::{Command, Arg};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -7,12 +8,14 @@ use signal_hook::{consts::SIGUSR1, iterator::Signals};
 use reqwest::blocking;
 use serde_json::json;
 
+use crate::config::Config;
 use crate::cpu::get_cpu_data;
 use crate::gpu::get_nvidia_gpu_data;
 use crate::memory::get_memory_data;
 use crate::network::get_network_data;
 use crate::sensors::get_sensor_data;
 
+mod config;
 mod sensors;
 mod cpu;
 mod gpu;
@@ -21,19 +24,32 @@ mod utils;
 mod network;
 
 struct State {
-    debug: bool
+    debug: bool,
+    config: Config
 }
 fn main() {
+    let matches = Command::new("Linux Sensor Agent")
+        .args(&[Arg::new("configpath")
+            .short('c')
+            .long("configfile")
+            .value_name("CONFIG_PATH")])
+        .get_matches();
+
+    let config_path = match matches.get_one::<String>("configpath") {
+        None => "config.toml",
+        Some(s) => s.as_str()
+    };
+    println!("Using config file: {}", config_path);
+    let config = config::read_config(config_path);
+
     let mut last_network_data = HashMap::<String, String>::new();
     let mut last_sample = Instant::now();
-    let state = Arc::new(Mutex::new(State { debug: false }));
+    let state = Arc::new(Mutex::new(State { config: config, debug: false }));
 
     signals_init(&state);
 
     loop {
         let mut sensor_data = get_sensor_data(state.lock().unwrap().debug);
-
-        let request_url = format!("http://sensor-relay.int.mindphaser.se/publish");
 
         let cpu_data = get_cpu_data();
         sensor_data.extend(cpu_data);
@@ -73,13 +89,13 @@ fn main() {
         last_network_data = network_data.clone();
 
         let register_body = json!({
-            "reporter": "linux-sensor-agent",
+            "reporter": state.lock().unwrap().config.reporter,
             "sensors": sensor_data,
             "topic": "sensors"
         });
 
         let post_response = blocking::Client::new()
-            .post(request_url)
+            .post(state.lock().unwrap().config.publish_url.clone())
             .json(&register_body)
             .timeout(Duration::from_secs(2))
             .send();
