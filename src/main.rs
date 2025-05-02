@@ -40,11 +40,15 @@ fn main() {
 
         let nvidia_gpu_data = get_nvidia_gpu_data();
         if sensor_data.len() > 0 {
+            sensor_data.insert("gpu_manufacturer".to_string(), "nvidia".to_string());
+            sensor_data.insert("gpu_model".to_string(), "RTX 5080".to_string());
             sensor_data.extend(nvidia_gpu_data);
         }
 
         let amd_gpu_data = gpu::get_amd_gpu_data();
         if amd_gpu_data.len() > 0 {
+            sensor_data.insert("gpu_manufacturer".to_string(), "amd".to_string());
+            sensor_data.insert("gpu_model".to_string(), "RX 6600".to_string());
             sensor_data.extend(amd_gpu_data);
         }
 
