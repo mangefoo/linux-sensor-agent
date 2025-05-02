@@ -8,16 +8,16 @@ pub fn get_sensor_data(debug: bool) -> HashMap<String, String> {
     sensor_map.insert("amdgpu-pci-1000.*/junction/temp[0-9]{1}_input", "gpu_junction_temp");
     sensor_map.insert("amdgpu-pci-1000.*/mem/temp[0-9]{1}_input", "gpu_mem_temp");
     sensor_map.insert("k10temp-.*/Tctl/temp[0-9]{1}_input", "cpu_temp");
-    sensor_map.insert("corsaircpro-.*/fan1 4pin/fan[0-9]{1}_input", "fan1_rpm");
-    sensor_map.insert("corsaircpro-.*/fan2 4pin/fan[0-9]{1}_input", "fan2_rpm");
-    sensor_map.insert("corsaircpro-.*/fan3 4pin/fan[0-9]{1}_input", "fan3_rpm");
-    sensor_map.insert("corsaircpro-.*/fan4 4pin/fan[0-9]{1}_input", "fan4_rpm");
-    sensor_map.insert("corsaircpro-.*/fan5 4pin/fan[0-9]{1}_input", "fan5_rpm");
-    sensor_map.insert("corsaircpro-.*/fan6 4pin/fan[0-9]{1}_input", "pump_rpm");
+    sensor_map.insert("corsaircpro-.*/fan3 4pin/fan[0-9]{1}_input", "fan1_rpm");
+    sensor_map.insert("corsaircpro-.*/fan4 4pin/fan[0-9]{1}_input", "fan2_rpm");
+    sensor_map.insert("corsaircpro-.*/fan5 4pin/fan[0-9]{1}_input", "fan3_rpm");
+    sensor_map.insert("corsaircpro-.*/fan1 4pin/fan[0-9]{1}_input", "fan4_rpm");
+    sensor_map.insert("corsaircpro-.*/fan2 4pin/fan[0-9]{1}_input", "fan5_rpm");
     sensor_map.insert("corsaircpro-.*/temp1/temp[0-9]{1}_input", "pump_temp");
     sensor_map.insert("corsaircpro-.*/temp2/temp[0-9]{1}_input", "exhaust_temp");
     sensor_map.insert("corsaircpro-.*/temp3/temp[0-9]{1}_input", "front_intake_temp");
     sensor_map.insert("corsaircpro-.*/temp4/temp[0-9]{1}_input", "ambient_temp");
+    sensor_map.insert("nct6798-isa-0290/fan2/fan[0-9]", "cpu_rpm");
 
     let sensor_values = get_sensor_values(&sensor_map, debug);
 

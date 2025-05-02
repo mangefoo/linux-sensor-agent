@@ -3,7 +3,7 @@ use regex::Regex;
 
 pub fn extract_values(content: String, value_map: HashMap<&str, &str>,
                   postprocessors: HashMap<&str, Box<dyn Fn(String) -> String>>) -> HashMap<String, String> {
-    let mut values = HashMap::<String, String>::new();
+    let mut values: HashMap<String, String> = HashMap::<String, String>::new();
 
     for line in content.split("\n") {
         for map_entry in &value_map {

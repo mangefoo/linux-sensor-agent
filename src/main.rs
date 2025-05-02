@@ -8,7 +8,7 @@ use reqwest::blocking;
 use serde_json::json;
 
 use crate::cpu::get_cpu_data;
-use crate::gpu::get_gpu_data;
+use crate::gpu::get_nvidia_gpu_data;
 use crate::memory::get_memory_data;
 use crate::network::get_network_data;
 use crate::sensors::get_sensor_data;
@@ -38,8 +38,15 @@ fn main() {
         let cpu_data = get_cpu_data();
         sensor_data.extend(cpu_data);
 
-        let gpu_data = get_gpu_data();
-        sensor_data.extend(gpu_data);
+        let nvidia_gpu_data = get_nvidia_gpu_data();
+        if sensor_data.len() > 0 {
+            sensor_data.extend(nvidia_gpu_data);
+        }
+
+        let amd_gpu_data = gpu::get_amd_gpu_data();
+        if amd_gpu_data.len() > 0 {
+            sensor_data.extend(amd_gpu_data);
+        }
 
         let memory_data = get_memory_data();
         sensor_data.extend(memory_data);
