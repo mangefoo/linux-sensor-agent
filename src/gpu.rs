@@ -22,6 +22,7 @@ fn parse_pm_info(pm_info: String) -> HashMap<String, String> {
     value_map.insert("gpu_voltage", "\\s*([0-9.]+) mV \\(VDDGFX\\).*");
     value_map.insert("gpu_power", "\\s*([0-9.]+) W \\(average GPU\\).*");
     value_map.insert("gpu_utilization", "GPU Load:\\s*([0-9.]+) %");
+    value_map.insert("gpu_package_temp", "GPU Temperature:\\s*([0-9.]+) C");
 
     postprocessors.insert("gpu_voltage", Box::from(|str: String| -> String {
         let val = str.parse::<f64>().unwrap();
