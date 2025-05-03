@@ -14,7 +14,7 @@ RestartSec=10
 startLimitIntervalSec=60
 
 WorkingDirectory=/
-ExecStart=/usr/local/sbin/linux-sensor-agent
+ExecStart=/usr/local/sbin/linux-sensor-agent -c /etc/linux-sensor-agent/config.toml
 
 PermissionsStartOnly=true
 StandardOutput=syslog

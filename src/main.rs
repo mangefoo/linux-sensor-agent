@@ -71,7 +71,7 @@ fn main() {
         let memory_data = get_memory_data();
         sensor_data.extend(memory_data);
 
-        let network_data = get_network_data();
+        let network_data = get_network_data(state.lock().unwrap().config.network_interface.clone());
         if last_network_data.keys().len() > 0 {
             let last_received = last_network_data.get("network_received_bytes_1").unwrap().parse::<i64>().unwrap();
             let last_sent = last_network_data.get("network_sent_bytes_1").unwrap().parse::<i64>().unwrap();

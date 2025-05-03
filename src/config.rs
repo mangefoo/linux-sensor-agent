@@ -7,10 +7,13 @@ pub struct Config {
     pub reporter: String,
     #[serde(default = "default_publish_url")]
     pub publish_url: String,
+    #[serde(default = "default_network_interface")]
+    pub network_interface: String,
 }
 
 fn default_reporter() -> String { "linux-sensor-agent".to_string() }
 fn default_publish_url() -> String { "http://localhost:8080/publish".to_string() }
+fn default_network_interface() -> String { "eth0".to_string() }
 
 pub fn read_config(filename: &str) -> Config {
     let config_str = fs::read_to_string(filename)
