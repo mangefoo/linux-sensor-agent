@@ -63,7 +63,7 @@ fn main() {
 
         let amd_gpu_data = gpu::get_amd_gpu_data();
         if amd_gpu_data.len() > 0 {
-            sensor_data.insert("gpu_vendor".to_string(), "Ryzen".to_string());
+            sensor_data.insert("gpu_vendor".to_string(), "Radeon".to_string());
             sensor_data.insert("gpu_model".to_string(), "RX 6600".to_string());
             sensor_data.extend(amd_gpu_data);
         }
