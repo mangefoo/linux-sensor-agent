@@ -11,7 +11,7 @@ LimitNOFILE=1024
 
 Restart=on-failure
 RestartSec=10
-startLimitIntervalSec=60
+StartLimitIntervalSec=60
 
 WorkingDirectory=/
 ExecStart=/usr/local/sbin/linux-sensor-agent -c /etc/linux-sensor-agent/config.toml
